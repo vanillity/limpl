@@ -1,0 +1,13 @@
+﻿**/Backup/
+**/packages/
+**/bin/**
+**/obj/**
+.vs/
+
+**.user
+**.suo
+*.vsp
+*.playlist
+
+x.dll
+UpgradeLog*
