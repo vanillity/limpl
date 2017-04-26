@@ -25,7 +25,7 @@ public class LexerTests : LimplTest
         Write(()=>tokenList);
 
         if (expectedTokenCount != null)
-                //assert_equals(expectedTokenCount,()=>tokenList.Count);        
+            assert_equals(expectedTokenCount,()=>tokenList.Count);        
 
         a?.Invoke(tokenList);
 
