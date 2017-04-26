@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-
-namespace Timpl
+﻿namespace Timpl
 {
-struct TokenKind :Limpl.ITokenKind
+    struct TokenKind :Limpl.ITokenKind
 {
     static TokenKind()
     {

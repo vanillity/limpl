@@ -23,7 +23,7 @@ public static class TokenKind
     public static void InitTokenKinds<T>(Func<int,T> makeTokenKind = null) where T : ITokenKind
     {
         var t = typeof(T);
-        var fields = t.GetTypeInfo().GetFields().Where(_=>_.IsStatic && _.IsPublic).ToList();            
+        var fields = t.GetRuntimeFields().Where(_=>_.IsStatic && _.IsPublic).ToList();            
 
         foreach(var f in fields.Where(_=>_.FieldType==t))
         {

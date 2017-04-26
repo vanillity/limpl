@@ -6,14 +6,14 @@ using Xunit;
 
 namespace LimplTests
 {
-public class LexerTests //: LimplTest
+public class LexerTests : LimplTest
 {
     Timpl.Lexer lexer = new Timpl.Lexer();
 
     [Fact] public void LexerTest1()
     {
     
-        //assert_equals(Timpl.TokenKind.Dot,()=>lexerTest(".",1,null).Single().Kind.Value);
+        assert_equals(Timpl.TokenKind.Dot,()=>lexerTest(".",1,null).Single().Kind.Value);
     }
 
     IList<Token> lexerTest(string input, int? expectedTokenCount = null, Action<IList<Token>> a = null)
@@ -21,8 +21,8 @@ public class LexerTests //: LimplTest
         var tokens = lexer.Lex(input);
         var tokenList = tokens.ToList();
 
-       // Write(()=>input);
-        //Write(()=>tokenList);
+        Write(()=>input);
+        Write(()=>tokenList);
 
         if (expectedTokenCount != null)
                 //assert_equals(expectedTokenCount,()=>tokenList.Count);        

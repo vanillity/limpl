@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Timpl
 {
-class Lexer:Limpl.ILexer<Token>
+class Lexer: Limpl.ILexer<Token>
 {
     public IEnumerable<Token> Lex(IEnumerable<char> input)
     {
