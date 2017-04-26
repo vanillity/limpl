@@ -12,7 +12,7 @@ using System.Threading;
 using Xunit;
 using static System.Linq.Expressions.ExpressionType;
 
-namespace Limpl.Tests
+namespace Vanillity.Tests
 {
     //Test base class
     public partial class Test : IDisposable

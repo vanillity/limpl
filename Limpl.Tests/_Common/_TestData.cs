@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Limpl.Tests
+namespace Vanillity.Tests
 {
 public class TestData
 {
