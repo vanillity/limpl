@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Limpl
 {
-    public interface ITokenKind
+public interface ITokenKind
 {
     int Value {get;}
 }

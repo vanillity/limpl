@@ -8,11 +8,12 @@ namespace Limpl
     {
         bool IsToken {get;}
         bool IsTrivia {get;}
-        ISyntaxNodeSource Source {get;}    
+        //ISyntaxSource Source {get;}   
+        ISyntaxNode Parent {get;}
+        
+        ISyntaxNode Clone();
+
     }
 
-    public interface ISyntaxNodeSource
-    {
-    
-    }
+
 }

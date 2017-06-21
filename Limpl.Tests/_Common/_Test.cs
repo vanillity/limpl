@@ -10,18 +10,22 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using Xunit;
+using Xunit.Abstractions;
 using static System.Linq.Expressions.ExpressionType;
 
 namespace Vanillity.Tests
 {
-    //Test base class
-    public partial class Test : IDisposable
+//Test base class
+public partial class Test : IDisposable
 {
+    readonly ITestOutputHelper output;
+
     //ctor
-    protected Test()
+    protected Test(ITestOutputHelper output)
     {
         TestData.Init();
         TestData = new TestData(this);
+        this.output = output;
         Initialize();
     }
 
@@ -38,6 +42,8 @@ namespace Vanillity.Tests
             return _TestContextWriter;
         }
     } TestContextTextWriter _TestContextWriter;
+
+
 
 
     //Initialize()
@@ -82,7 +88,7 @@ namespace Vanillity.Tests
         var _y = actual.Body is ConstantExpression || actual.Body.NodeType == ExpressionType.MemberAccess ? exprStr(actual.Body) : $"{exprStr(actual.Body)} ⩵ «{y}»";
         Write($"assert EQUAL: ({_x}) == ({_y})");
 
-        if (format == null && !x.Equals(y))
+        if (format != null && !x.Equals(y))
         {
             Write("FAIL!");
             Write(string.Format(format,args));
@@ -238,22 +244,23 @@ namespace Vanillity.Tests
     //Write()
     protected internal void Write(string msg)
     {
-        Console.WriteLine("[{0:yyyy-MM-dd hh:mm:ss.fff}] {1}",DateTime.Now, msg);
+        output.WriteLine("[{0:yyyy-MM-dd hh:mm:ss.fff}] {1}",DateTime.Now, msg);
     }
     protected internal void Write(string f, params object[] args)
     { 
-        Console.WriteLine("[{0:yyyy-MM-dd hh:mm:ss.fff}] {1}",DateTime.Now, string.Format(f,args));
+        output.WriteLine("[{0:yyyy-MM-dd hh:mm:ss.fff}] {1}",DateTime.Now, string.Format(f,args));
     }
 
     //Write()
     protected internal void Write<T>(Expression<Func<T>> exp)
     {
-        Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd hh:mm:ss.fff}] {exprStr(exp.Body).Replace("{","{{").Replace("}","}}")} == {objStr(exp.Compile()()).Replace("{","{{").Replace("}","}}")}");
+        output.WriteLine($"[{DateTime.Now:yyyy-MM-dd hh:mm:ss.fff}] {exprStr(exp.Body).Replace("{","{{").Replace("}","}}")} == {objStr(exp.Compile()()).Replace("{","{{").Replace("}","}}")}");
     }
    
     //Write()
     protected internal void Write(object o)
-    { Console.WriteLine("[{0:yyyy-MM-dd hh:mm:ss.fff}] {1}",DateTime.Now,objStr(o));
+    { 
+        output.WriteLine("[{0:yyyy-MM-dd hh:mm:ss.fff}] {1}",DateTime.Now,objStr(o));
     }
 
 
@@ -263,9 +270,8 @@ namespace Vanillity.Tests
         if (o == null)
             return "<null>";
 
-        var e = o as IEnumerable;
-        if (e != null && !(o is string))
-            return "["+string.Join(", ",e.Cast<object>().Select(objStr))+"]";
+        if (o is IEnumerable e && !(o is string))
+            return "[" + string.Join(", ",e.Cast<object>().Select(objStr)) + "]";
 
         var t = o.GetType();
 

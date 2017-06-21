@@ -67,6 +67,7 @@
     <Compile Include="Timpl\Lexer.cs" />
     <Compile Include="Timpl\Token.cs" />
     <Compile Include="Timpl\TokenKind.cs" />
+    <Compile Include="Timpl\TokenRule.cs" />
     <Compile Include="_Common\_Test.cs" />
     <Compile Include="_Common\_TestData.cs" />
   </ItemGroup>

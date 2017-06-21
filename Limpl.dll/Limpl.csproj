@@ -7,8 +7,8 @@
     <ProjectGuid>{98D38482-79EC-46A7-8931-AFDED665AE74}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Limpl.dll</RootNamespace>
-    <AssemblyName>Limpl.dll</AssemblyName>
+    <RootNamespace>Limpl</RootNamespace>
+    <AssemblyName>Limpl</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -32,6 +32,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.3.1\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -41,13 +44,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions.cs" />
+    <Compile Include="Parsing\Events.cs" />
+    <Compile Include="Parsing\TriviaRuleList.cs" />
+    <Compile Include="Parsing\TokenRuleList.cs" />
+    <Compile Include="Parsing\TriviaRule.cs" />
+    <Compile Include="Parsing\Scanner.cs" />
+    <Compile Include="Parsing\TokenRule.cs" />
     <Compile Include="Parsing\Lexer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Syntax\Common.cs" />
+    <Compile Include="Common.cs" />
+    <Compile Include="Syntax\SyntaxList.cs" />
     <Compile Include="Syntax\SyntaxNode.cs" />
     <Compile Include="Syntax\Token.cs" />
     <Compile Include="Syntax\TokenKind.cs" />
-    <Compile Include="Syntax\Trivia.cs" />
+    <Compile Include="Syntax\SyntaxTrivia.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

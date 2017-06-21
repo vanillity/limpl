@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Limpl.Syntax
+namespace Limpl
 {
-    public interface ISyntaxTrivia : ISyntaxNode
+    public interface ISyntaxTrivia : IToken
     {
         
     }

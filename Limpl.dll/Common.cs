@@ -38,5 +38,10 @@ public static class Common
         public const int Asterisk = 8199;
     }
 
+    public static class TokenRules
+    {
+        public static bool MatchesStartOfFile(Scanner<char> scanner, int position) => scanner.Position<0 && position<1;
+        public static bool MatchesEndOfFile(Scanner<char> scanner, int position) => scanner.End;
+    }
 }
 }

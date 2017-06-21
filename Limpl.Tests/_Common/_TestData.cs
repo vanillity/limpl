@@ -13,14 +13,14 @@ public class TestData
         this.test = test;
     }
 
-    internal void Init()
+    public static  void Init()
     {
-        throw new NotImplementedException();
+        
     }
 
-        internal void Cleanup()
-        {
-            throw new NotImplementedException();
-        }
+    internal void Cleanup()
+    {
+        
     }
+}
 }
