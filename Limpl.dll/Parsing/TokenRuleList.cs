@@ -24,20 +24,9 @@ public class TokenRuleList<TRule, TToken>  : TokenSourceList<TRule, TToken> wher
         return new TokenRuleList<TRule, TToken>(InnerList.Where(_=>_.MatchesUpTo(chars,k)));
     }
 
-    protected TokenRuleList<TRule, TToken> Add(string tokenText, ITokenKind kind = null)
-    { 
-       throw new NotImplementedException();
-    }
-
-    public TRule AddPattern(string pattern, ITokenKind kind = null)
-    { 
-       throw new NotImplementedException();
-    }
-
-    //                        (iscanner, positionFromStart) => maxPositionChecked
-    public TRule Add(Func<IScanner<char>,int,int> f, Func<Scanner<char>,TToken> lex) 
-    { 
-       throw new NotImplementedException();
+    public TokenRuleList<TRule, TToken> Add(params TRule[] rules)
+    {
+        return new TokenRuleList<TRule, TToken>(InnerList.Concat(rules));
     }
 
 }

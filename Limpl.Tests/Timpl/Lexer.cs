@@ -39,11 +39,19 @@ class Lexer : Limpl.Lexer<Token,Token>
             sof = new Token(null,TokenKind.SOF);
     }
 
-    protected override void OnEndOfFile(out Token eof)
+    protected override void OnEndOfFileTrivia(out Token eof)
     {
-        base.OnEndOfFile(out eof);
+        base.OnEndOfFileToken(out eof);
 
         if (TriviaRules.Contains(TokenRule.EOF))
+            eof = new Token(null,TokenKind.EOF);
+    }
+
+    protected override void OnEndOfFileToken(out Token eof)
+    {
+        base.OnEndOfFileToken(out eof);
+
+        if (TokenRules.Contains(TokenRule.EOF))
             eof = new Token(null,TokenKind.EOF);
     }
 

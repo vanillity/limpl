@@ -43,6 +43,10 @@ public class LexerTests : LimplTest
             assert_equals(TokenKind.EOF,eof.Kind);  
         });
 
+        //EOF as token
+        lexer = new Lexer(lexer.TokenRules.Add(TokenRule.EOF),lexer.TriviaRules);  
+        lexerTest("x",3); // <StartOfFile> & 'x' & <EOF>
+
     }
 
     [Fact] public void TriviaTest1()

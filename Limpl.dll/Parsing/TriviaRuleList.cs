@@ -26,20 +26,9 @@ public class TriviaRuleList<TRule, TTrivia>  : TriviaSourceList<TRule, TTrivia>
         return new TriviaRuleList<TRule, TTrivia>(InnerList.Where(_=>_.MatchesUpTo(chars,k)));
     }
 
-    protected TriviaRuleList<TRule, TTrivia> Add(string tokenText, ITokenKind kind = null)
-    { 
-       throw new NotImplementedException();
-    }
-
-    public TRule AddPattern(string pattern, ITokenKind kind = null)
-    { 
-       throw new NotImplementedException();
-    }
-
-    //                        (iscanner, positionFromStart) => maxPositionChecked
-    public TRule Add(Func<IScanner<char>,int,int> f, Func<Scanner<char>,TTrivia> lex) 
-    { 
-       throw new NotImplementedException();
+    public TriviaRuleList<TRule, TTrivia> Add(params TRule[] rules)
+    {
+        return new TriviaRuleList<TRule, TTrivia>(InnerList.Concat(rules));
     }
 
 }

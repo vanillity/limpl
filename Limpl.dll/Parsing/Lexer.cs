@@ -91,7 +91,7 @@ public abstract class Lexer<TToken,TTrivia> : ILexer<TToken,TTrivia> where TToke
                 {
                     var p = chars.Position;
                     _token = tokenRule.Lex(chars);
-                    if (p == chars.Position && _token.Text.Length > 0)
+                    if (p == chars.Position && _token.Text?.Length > 0)
                         chars.MoveNext();
                     continue;
                 }
@@ -106,13 +106,13 @@ public abstract class Lexer<TToken,TTrivia> : ILexer<TToken,TTrivia> where TToke
 
             
             end:
-            TToken eof = default(TToken);
+            var eof_trivia = default(TTrivia);
             {
                 if (chars.End)
                 {
-                    OnEndOfFile(out eof);
-                    if (!eof.Equals(default(TToken)) && eof is TTrivia eofTrivia)
-                       trailingTrivia.Add(eofTrivia);
+                    OnEndOfFileTrivia(out eof_trivia);
+                    if (!eof_trivia.Equals(default(TTrivia)))
+                       trailingTrivia.Add(eof_trivia);
                 }
             
                 if (leadingTrivia.Count > 0)
@@ -132,8 +132,9 @@ public abstract class Lexer<TToken,TTrivia> : ILexer<TToken,TTrivia> where TToke
             }
 
 
-            if ((object) eof == (object) default(TToken))
-                OnEndOfFile(out eof);
+            OnEndOfFileToken(out TToken eof);
+            if (!eof.Equals(default(TToken)))
+                yield return eof;
          }
     }
 
@@ -148,7 +149,13 @@ public abstract class Lexer<TToken,TTrivia> : ILexer<TToken,TTrivia> where TToke
         sof = default(TToken);
     }
 
-    protected virtual void OnEndOfFile(out TToken eof)
+    protected virtual void OnEndOfFileTrivia(out TTrivia eof)
+    {
+        EndOfFile?.Invoke(this,new LexerEventsArgs<Lexer<TToken, TTrivia>, TToken, TTrivia>(this));
+        eof = default(TTrivia);
+    }
+
+    protected virtual void OnEndOfFileToken(out TToken eof)
     {
         EndOfFile?.Invoke(this,new LexerEventsArgs<Lexer<TToken, TTrivia>, TToken, TTrivia>(this));
         eof = default(TToken);
