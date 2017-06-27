@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 
 namespace Limpl.Syntax
 {
+public delegate void RefAction<T,U>(ref T arg0, U arg1);
+
 /// <summary>A list of syntax nodes.</summary>
 /// <typeparam name="TNode"></typeparam>
 public class SyntaxList<TNode> :  IReadOnlyList<TNode> where TNode : ISyntaxNode
@@ -16,7 +18,7 @@ public class SyntaxList<TNode> :  IReadOnlyList<TNode> where TNode : ISyntaxNode
     readonly ISyntaxNode owner;
     ImmutableList<TNode> nodes = ImmutableList<TNode>.Empty;
 
-    public SyntaxList(ISyntaxNode owner, IEnumerable<TNode> nodes, Action<TNode,ISyntaxNode> setParent)
+    public SyntaxList(ISyntaxNode owner, IEnumerable<TNode> nodes, RefAction<TNode,ISyntaxNode> setParent)
     {
         this.owner = owner;
 
@@ -34,13 +36,14 @@ public class SyntaxList<TNode> :  IReadOnlyList<TNode> where TNode : ISyntaxNode
             if (node.Parent != null)
             {                
                var _node = (TNode) node.Clone();
-               setParent(_node,owner);
+               setParent(ref _node,owner);
                nodeList.Add(_node);
             }
             else
             {
-               setParent(node,owner);
-               nodeList.Add(node);
+               var _node = node;
+               setParent(ref _node,owner);
+               nodeList.Add(_node);
             }
         }
 

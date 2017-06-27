@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Limpl;
 using Limpl.Syntax;
@@ -30,19 +31,19 @@ class Lexer : Limpl.Lexer<Token,Token>
         return Token.Fallback(sb.ToString());
     }
 
-    protected override void SetLeadingTrivia(Token token,SyntaxList<Token> leadingTrivia)
+    protected override void SetLeadingTrivia(ref Token token,SyntaxList<Token> leadingTrivia)
     {
-        throw new NotImplementedException();
+        token.LeadingTrivia = leadingTrivia;
     }
 
-    protected override void SetParent(Token trivia,ISyntaxNode parent)
+    protected override void SetParent(ref Token token,ISyntaxNode parent)
     {
-        throw new NotImplementedException();
+        token.Parent = parent;
     }
 
-    protected override void SetTrailingTrivia(Token token,SyntaxList<Token> leadingTrivia)
+    protected override void SetTrailingTrivia(ref  Token token,SyntaxList<Token> trailingTrivia)
     {
-        throw new NotImplementedException();
+        token.TrailingTrivia = trailingTrivia;
     }
 }
 }

@@ -27,17 +27,21 @@ public class LexerTests : LimplTest
     [Fact] public void LexerTest1()
     {
    
-       //assert_equals(Timpl.TokenKind.Dot,()=>lexerTest(".",1,null).Single().Kind);
-       //assert_equals(TokenKind.Misc,()=>lexerTest("<>",1,null).Single().Kind);
+       assert_equals(Timpl.TokenKind.Dot,()=>lexerTest(".",1,null).Single().Kind);
+       assert_equals(TokenKind.Misc,()=>lexerTest("<>",1,null).Single().Kind);
 
        // return; 
 
+    }
+
+    [Fact] public void TriviaTest1()
+    {
         lexer = new Lexer(lexer.TokenRules,new[]{TokenRule.SOF});
         lexerTest("x", 1,tokens =>
         {
-            //Write(()=>tokens[0].LeadingTrivia);
-            //var sof = tokens[0].LeadingTrivia.Single();
-            //assert_equals(TokenKind.SOF,sof.Kind);
+            Write(()=>tokens[0].LeadingTrivia);
+            var sof = tokens[0].LeadingTrivia.Single();
+            assert_equals(TokenKind.SOF,sof.Kind);
         }); 
     }
 

@@ -9,7 +9,7 @@ namespace Limpl
     {
         ITokenKind Kind {get;}
         string Text {get;}
-        SyntaxList<ISyntaxTrivia> LeadingTrivia  {get;}
-        SyntaxList<ISyntaxTrivia> TrailingTrivia {get;}
+        IReadOnlyList<ISyntaxTrivia> LeadingTrivia  {get;}
+        IReadOnlyList<ISyntaxTrivia> TrailingTrivia {get;}
     }
 }
