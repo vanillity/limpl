@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -23,14 +24,30 @@ public interface IScanner<T> : IReadOnlyScanner<T>
     T Consume();
 }
 
+/// <summary>Extension methods for IScanner and IReadOnlyScanner</summary>
+public static class Scanner
+{
+    public static string Scan(this IReadOnlyScanner<char> scanner, int length)
+    {
+        var sb = new StringBuilder();
+        for(var i = 0; i < length; ++i)
+            sb.Append(scanner.LookAhead(i));
+        Debug.Assert(sb.Length==length);
+        var s = sb.ToString();
+        return s;
+    }
+}
 
 public class Scanner<T> : IScanner<T>, IEnumerator<T>
 {
     readonly List<T> buffer = new List<T>();
     IEnumerator<T> enumerator;
 
+    const int uninitializedPosition = -3;
+    const int initializedPosition   = -1;
+
     T current;
-    int position = -2;
+    int position = uninitializedPosition; 
     
     public T    Current  {get {return current;}}
     public T    Next     {get {return LookAhead(1);}}
@@ -40,7 +57,7 @@ public class Scanner<T> : IScanner<T>, IEnumerator<T>
     public virtual void Initialize(IEnumerator<T> input)
     {
         enumerator = input ?? throw new ArgumentNullException(nameof(input));
-        position = -1;
+        position = initializedPosition;
         End = false;
     }
 

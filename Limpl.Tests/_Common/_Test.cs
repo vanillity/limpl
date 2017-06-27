@@ -209,7 +209,7 @@ public partial class Test : IDisposable
     }
    
     //AssertNotNull
-    public void assert_not_null<T>(T o) 
+    public void assert_not_null<T>(T o) where T  : class
         => Assert.NotNull(o);
     public void assert_not_null<T>(Expression<Func<T>> e, Expression<Func<object>> ifFail = null) where T : class
     { 

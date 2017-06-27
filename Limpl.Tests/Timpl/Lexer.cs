@@ -19,7 +19,7 @@ class Lexer : Limpl.Lexer<Token,Token>
 
     private static IEnumerable<ITokenRule<Token>> DefaultTokenRules()
     {
-        yield return DotTokenRule.Instance;
+        yield return TokenRule.Dot;
     }
 
     protected override Token LexFallbackToken(Scanner<char> chars)

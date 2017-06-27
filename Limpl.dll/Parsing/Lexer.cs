@@ -67,7 +67,8 @@ public abstract class Lexer<TToken,TTrivia> : ILexer<TToken,TTrivia> where TToke
                 var p = chars.Position;
                 var _triv = (TTrivia) triviaRule.Lex(chars);
                 trivia.Add(_triv);
-                if (p == chars.Position && _triv.Text?.Length > 0)
+                //_token = _triv;
+                if (p == chars.Position)
                     chars.MoveNext();
                 continue;
             }
@@ -81,7 +82,7 @@ public abstract class Lexer<TToken,TTrivia> : ILexer<TToken,TTrivia> where TToke
                 {
                     var p = chars.Position;
                     _token = tokenRule.Lex(chars);
-                    if (p == chars.Position && _token.Text.Length > 0)
+                    if (p == chars.Position)
                         chars.MoveNext();
                     continue;
                 }

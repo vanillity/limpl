@@ -13,6 +13,7 @@ public struct TokenKind : Limpl.ITokenKind
 
     public readonly static TokenKind Misc = new TokenKind(Limpl.Common.TokenKinds.Unspecified);
     public readonly static TokenKind Dot  = new TokenKind(Limpl.Common.TokenKinds.Dot);
+    public readonly static TokenKind SOF  = new TokenKind(Limpl.Common.TokenKinds.StartOfFile);
 
     public override string ToString()
     {
