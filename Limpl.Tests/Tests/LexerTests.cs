@@ -69,6 +69,27 @@ public class LexerTests : LimplTest
         })));
         lexerTest("a\r\n b",2);
 
+        //...
+        lexer = new Lexer(lexer.TokenRules.Add
+        (
+           TokenRule.SimpleTokenRule(TokenKind.Misc, "@"),
+           TokenRule.SimpleTokenRule(TokenKind.Misc, "<"),
+           TokenRule.SimpleTokenRule(TokenKind.Misc, ">"),
+           TokenRule.SimpleTokenRule(TokenKind.Misc, ";"),
+           TokenRule.SimpleTokenRule(TokenKind.Misc, ":"),
+           TokenRule.SimpleTokenRule(TokenKind.Misc, "("),
+           TokenRule.SimpleTokenRule(TokenKind.Misc, ")"),
+           TokenRule.SimpleTokenRule(TokenKind.Misc, "{"),
+           TokenRule.SimpleTokenRule(TokenKind.Misc, "}"),
+           TokenRule.SimpleTokenRule(TokenKind.Misc, ",")
+        ), lexer.TriviaRules);
+        lexerTest("a;<>,\r\n@b:{}(c)",13);
+
+        //string literal
+        lexer = new Lexer(lexer.TokenRules.Add(TokenRule.StringLiteral),lexer.TriviaRules);
+        lexerTest(@"a""b{};\""\ \\""c",3); // a, "b{};\"\ \", c
+
+
     }
 
     [Fact] public void TriviaTest1()
