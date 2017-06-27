@@ -25,10 +25,7 @@ class Lexer : Limpl.Lexer<Token,Token>
 
     protected override Token LexFallbackToken(Scanner<char> chars)
     {
-        var sb = new StringBuilder();
-        while (!chars.End)
-            sb.Append(chars.Consume());
-        return Token.Fallback(sb.ToString());
+        return token(TokenKind.Misc,chars,null,c=>GetTriviaRule(chars)==null && (GetTokenRule(chars)?.IsAllowedInOtherToken ?? true));
     }
 
     protected override void OnStartOfFile(out Token sof)
@@ -69,5 +66,27 @@ class Lexer : Limpl.Lexer<Token,Token>
     {
         token.TrailingTrivia = trailingTrivia;
     }
+
+    internal static  Token token(
+                            TokenKind kind, 
+                            Scanner<char> buffer, 
+                            ITokenRule<Token> tokendef,
+                            Func<char,bool> predicate=null) 
+    {
+        //TODO: change to false only after called once before? 
+        if (predicate==null) 
+            predicate = c => false;     
+       
+        var sb  = new StringBuilder().Append(buffer.Consume());
+        var pos = buffer.Position;
+        
+        while (!buffer.End && predicate(buffer.Current)) 
+            sb.Append(buffer.Consume());  
+
+        var text = sb.ToString();
+
+        return new Token(text,kind);
+    }
+
 }
 }

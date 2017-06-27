@@ -161,6 +161,12 @@ public abstract class Lexer<TToken,TTrivia> : ILexer<TToken,TTrivia> where TToke
         eof = default(TToken);
     }
 
+    protected ITokenRule<TToken> GetTokenRule(IScanner<char> chars)
+      => getRule(TokenRules,chars,TokenRules.Matches);
+
+    protected ITriviaRule<TTrivia> GetTriviaRule(IScanner<char> chars)
+      => getRule(TriviaRules,chars,TriviaRules.Matches);
+
     T getRule<T>(IReadOnlyList<T> rules, IScanner<char> chars, Func<IScanner<char>,int,IReadOnlyList<T>> getMatches)
     {
         int k = -1;

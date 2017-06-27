@@ -47,6 +47,9 @@ public class LexerTests : LimplTest
         lexer = new Lexer(lexer.TokenRules.Add(TokenRule.EOF),lexer.TriviaRules);  
         lexerTest("x",3); // <StartOfFile> & 'x' & <EOF>
 
+        lexer = new Lexer(triviaRules: lexer.TriviaRules.Add(TokenRule.Space));
+        lexerTest("a b",2,tokens=>Write(()=>tokens.Select(_=>new {_, _.LeadingTrivia, _.TrailingTrivia})));
+
     }
 
     [Fact] public void TriviaTest1()

@@ -13,9 +13,16 @@ public class TokenRule : Limpl.TokenRule<Token>, Limpl.ITriviaRule<Token>
     public static readonly TokenRule Dot = SimpleTokenRule(kind: TokenKind.Dot,text: ".");
     public static readonly TokenRule SOF = new TokenRule(TokenKind.SOF,(s,i)=>s.Position<0&&i<1,(td,s)=>new Token(null,TokenKind.SOF,null,true));
     public static readonly TokenRule EOF = new TokenRule(TokenKind.EOF,(s,i)=>s.End,(td,s)=>new Token(null,TokenKind.EOF,null,true));
+   
+    public static readonly TokenRule Space = new TokenRule
+    (
+        TokenKind.Space,
+        (s,i)=>((s.LookAhead(i)==' ' || s.LookAhead(i)=='\t')),
+        (td,s)=>Lexer.token(TokenKind.Space,s,td,_=>_==' ' || _=='\t')
+    );
 
-   private TokenRule(TokenKind kind, Func<Limpl.IScanner<char>,int,bool> matchesUpTo, Func<TokenRule,Limpl.Scanner<char>,Token> lex, bool allowedInOtherToken = false) 
-                    : base(
+    private TokenRule(TokenKind kind, Func<Limpl.IScanner<char>,int,bool> matchesUpTo, Func<TokenRule,Limpl.Scanner<char>,Token> lex, bool allowedInOtherToken = false) 
+                : base(
                         kind,
                         matchesUpTo,
                         lex: (rule,scanner)=>lex((TokenRule)rule,scanner),
