@@ -48,7 +48,6 @@ public class Scanner<T> : IScanner<T>, IEnumerator<T>
 
     T current;
     int position = uninitializedPosition;
-    private IEnumerable<char> chars;
 
     public Scanner() {}
 
