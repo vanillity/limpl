@@ -20,7 +20,7 @@ public abstract class StringLiteralRule<TToken> : ITokenRule<TToken> where TToke
        this.delimiters = delimiters; 
     }
 
-    public bool IsAllowedInOtherToken => false;
+    public virtual bool IsAllowedInOtherToken => false;
 
     public abstract TToken CreateToken(IEnumerable<char> chars);
 
