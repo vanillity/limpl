@@ -52,18 +52,19 @@ public abstract class Lexer<TToken,TTrivia> : ILexer<TToken,TTrivia> where TToke
             var c = chars.Current;
             var trivia = (_token.Equals(default(TToken))) ? leadingTrivia : trailingTrivia;
 
-            if (chars.Position < 0)
-            {
-                var sofRule = getRule(TriviaRules,chars,TriviaRules.Matches);
-                if (sofRule != null)
-                {
-                    var _triv = (TTrivia) sofRule.Lex(chars);
-                    leadingTrivia.Add(_triv);
-                }
-            }
-
             if (c == '\0') //NUL is before beginning and after end
             {
+               if (chars.Position < 0)
+                {
+                    var sofRule = getRule(TriviaRules,chars,TriviaRules.Matches);
+                    if (sofRule != null)
+                    {
+                        var _triv = (TTrivia) sofRule.Lex(chars);
+                        leadingTrivia.Add(_triv);
+                    }
+                }
+
+            
                 if (chars.End)
                     goto end;
                 else
@@ -77,7 +78,7 @@ public abstract class Lexer<TToken,TTrivia> : ILexer<TToken,TTrivia> where TToke
                 var p = chars.Position;
                 var _triv = (TTrivia) triviaRule.Lex(chars);
                 trivia.Add(_triv);
-                if (p == chars.Position)
+                if (p == chars.Position && _triv.Text?.Length > 0)
                     chars.MoveNext();
                 continue;
             }
@@ -86,17 +87,17 @@ public abstract class Lexer<TToken,TTrivia> : ILexer<TToken,TTrivia> where TToke
             if (_token.Equals(default(TToken)))
             {
                 var tokenRule = getRule(TokenRules,chars,TokenRules.Matches);    
-
                 if (tokenRule!=null)
                 {
                     var p = chars.Position;
                     _token = tokenRule.Lex(chars);
-                    if (p == chars.Position)
+                    if (p == chars.Position && _token.Text.Length > 0)
                         chars.MoveNext();
                     continue;
                 }
             }
 
+            //fall-back token (cluster)
             if (_token.Equals(default(TToken)))
             {
                 _token = LexFallbackToken(chars); //tokenCluster()

@@ -30,7 +30,9 @@ public class LexerTests : LimplTest
        assert_equals(Timpl.TokenKind.Dot,()=>lexerTest(".",1,null).Single().Kind);
        assert_equals(TokenKind.Misc,()=>lexerTest("<>",1,null).Single().Kind);
 
-       // return; 
+       lexer = new Lexer(lexer.TokenRules.Concat(new[]{TokenRule.SOF}));
+       lexerTest("x",expectedTokenCount: 2); // <StartOfFile> & 'x'
+
 
     }
 

@@ -31,6 +31,14 @@ class Lexer : Limpl.Lexer<Token,Token>
         return Token.Fallback(sb.ToString());
     }
 
+    protected override void OnStartOfFile(out Token sof)
+    {
+        if (TokenRules.Contains(TokenRule.SOF))
+            sof = new Token(null,TokenKind.SOF);
+        else
+            sof = default(Token);
+    }
+
     protected override void SetLeadingTrivia(ref Token token,SyntaxList<Token> leadingTrivia)
     {
         token.LeadingTrivia = leadingTrivia;
