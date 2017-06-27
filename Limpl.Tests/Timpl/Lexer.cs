@@ -33,10 +33,18 @@ class Lexer : Limpl.Lexer<Token,Token>
 
     protected override void OnStartOfFile(out Token sof)
     {
+        base.OnStartOfFile(out sof);
+         
         if (TokenRules.Contains(TokenRule.SOF))
             sof = new Token(null,TokenKind.SOF);
-        else
-            sof = default(Token);
+    }
+
+    protected override void OnEndOfFile(out Token eof)
+    {
+        base.OnEndOfFile(out eof);
+
+        if (TriviaRules.Contains(TokenRule.EOF))
+            eof = new Token(null,TokenKind.EOF);
     }
 
     protected override void SetLeadingTrivia(ref Token token,SyntaxList<Token> leadingTrivia)

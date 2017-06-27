@@ -148,10 +148,10 @@ public abstract class Lexer<TToken,TTrivia> : ILexer<TToken,TTrivia> where TToke
         sof = default(TToken);
     }
 
-    protected virtual void OnEndOfFile(out TToken sof)
+    protected virtual void OnEndOfFile(out TToken eof)
     {
         EndOfFile?.Invoke(this,new LexerEventsArgs<Lexer<TToken, TTrivia>, TToken, TTrivia>(this));
-        sof = default(TToken);
+        eof = default(TToken);
     }
 
     T getRule<T>(IReadOnlyList<T> rules, IScanner<char> chars, Func<IScanner<char>,int,IReadOnlyList<T>> getMatches)

@@ -12,9 +12,9 @@ public class TokenRule : Limpl.TokenRule<Token>, Limpl.ITriviaRule<Token>
 {
     public static readonly TokenRule Dot = SimpleTokenRule(kind: TokenKind.Dot,text: ".");
     public static readonly TokenRule SOF = new TokenRule(TokenKind.SOF,(s,i)=>s.Position<0&&i<1,(td,s)=>new Token(null,TokenKind.SOF,null,true));
+    public static readonly TokenRule EOF = new TokenRule(TokenKind.EOF,(s,i)=>s.End,(td,s)=>new Token(null,TokenKind.EOF,null,true));
 
-
-    private TokenRule(TokenKind kind, Func<Limpl.IScanner<char>,int,bool> matchesUpTo, Func<TokenRule,Limpl.Scanner<char>,Token> lex, bool allowedInOtherToken = false) 
+   private TokenRule(TokenKind kind, Func<Limpl.IScanner<char>,int,bool> matchesUpTo, Func<TokenRule,Limpl.Scanner<char>,Token> lex, bool allowedInOtherToken = false) 
                     : base(
                         kind,
                         matchesUpTo,
