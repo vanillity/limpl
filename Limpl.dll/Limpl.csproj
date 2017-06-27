@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Extensions.cs" />
     <Compile Include="Parsing\Events.cs" />
+    <Compile Include="Parsing\NumericLiteralRule.cs" />
     <Compile Include="Parsing\StringLiteralRule.cs" />
     <Compile Include="Parsing\TriviaRuleList.cs" />
     <Compile Include="Parsing\TokenRuleList.cs" />

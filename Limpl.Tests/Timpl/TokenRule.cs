@@ -42,6 +42,14 @@ public class TokenRule : Limpl.TokenRule<Token>, Limpl.ITriviaRule<Token>
         }
     }
 
+    public class NumericLiteralRule:NumericLiteralRule<Token>
+    {
+        public override Token CreateToken(IEnumerable<char> chars,double value)
+        {
+            return new Token(new string(chars.ToArray()),TokenKind.Misc);
+        }
+    }
+
     public class DotsDefinition : ITokenRule<Token>
     {
         public bool IsAllowedInOtherToken => true;

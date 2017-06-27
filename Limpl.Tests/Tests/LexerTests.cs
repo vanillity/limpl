@@ -92,6 +92,10 @@ public class LexerTests : LimplTest
         //dots
         lexer = new Lexer(lexer.TokenRules.Add(new TokenRule.DotsDefinition()),lexer.TriviaRules);
         lexerTest(".a ..b ...c",6); //., a, .., b, ..., c
+
+        //number literal 
+        lexer = new Lexer(lexer.TokenRules.Add(new TokenRule.NumericLiteralRule()),lexer.TriviaRules);
+        lexerTest("a 9.0.b c",5); // a, 9.0, ., b, c
     }
 
     [Fact] public void TriviaTest1()
