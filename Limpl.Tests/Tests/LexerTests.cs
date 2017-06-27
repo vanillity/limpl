@@ -89,7 +89,9 @@ public class LexerTests : LimplTest
         lexer = new Lexer(lexer.TokenRules.Add(TokenRule.StringLiteral),lexer.TriviaRules);
         lexerTest(@"a""b{};\""\ \\""c",3); // a, "b{};\"\ \", c
 
-
+        //dots
+        lexer = new Lexer(lexer.TokenRules.Add(new TokenRule.DotsDefinition()),lexer.TriviaRules);
+        lexerTest(".a ..b ...c",6); //., a, .., b, ..., c
     }
 
     [Fact] public void TriviaTest1()

@@ -47,8 +47,16 @@ public class Scanner<T> : IScanner<T>, IEnumerator<T>
     const int initializedPosition   = -1;
 
     T current;
-    int position = uninitializedPosition; 
-    
+    int position = uninitializedPosition;
+    private IEnumerable<char> chars;
+
+    public Scanner() {}
+
+    public Scanner(IEnumerable<T> input)
+    {
+        Initialize(input.GetEnumerator());
+    }
+
     public T    Current  {get {return current;}}
     public T    Next     {get {return LookAhead(1);}}
     public bool End      {get; private set; }   

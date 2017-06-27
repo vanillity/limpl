@@ -10,9 +10,9 @@ namespace Timpl
 {
 public class TokenRule : Limpl.TokenRule<Token>, Limpl.ITriviaRule<Token>
 {
-    public static readonly TokenRule Dot = SimpleTokenRule(kind: TokenKind.Dot,text: ".");
-    public static readonly TokenRule SOF = new TokenRule(TokenKind.SOF,(s,i)=>s.Position<0&&i<1,(td,s)=>new Token(null,TokenKind.SOF,null,true));
-    public static readonly TokenRule EOF = new TokenRule(TokenKind.EOF,(s,i)=>s.End,(td,s)=>new Token(null,TokenKind.EOF,null,true));
+    public readonly static TokenRule Dot = SimpleTokenRule(kind: TokenKind.Dot,text: ".");
+    public readonly static TokenRule SOF = new TokenRule(TokenKind.SOF,(s,i)=>s.Position<0&&i<1,(td,s)=>new Token(null,TokenKind.SOF,null,true));
+    public readonly static TokenRule EOF = new TokenRule(TokenKind.EOF,(s,i)=>s.End,(td,s)=>new Token(null,TokenKind.EOF,null,true));
     public readonly static StringLiteralRule StringLiteral = new StringLiteralRule();
 
     public static readonly TokenRule Space = new TokenRule
@@ -40,6 +40,36 @@ public class TokenRule : Limpl.TokenRule<Token>, Limpl.ITriviaRule<Token>
         {
             return new Token(new string(chars.ToArray()),TokenKind.Misc);
         }
+    }
+
+    public class DotsDefinition : ITokenRule<Token>
+    {
+        public bool IsAllowedInOtherToken => true;
+
+        public Token Lex(Scanner<char> chars)
+        {
+            Debug.Assert(chars.Current=='.');
+            chars.MoveNext();
+       
+            if (chars.Current=='.')
+            {
+                chars.MoveNext();
+                if (chars.Current=='.') 
+                {
+                    chars.MoveNext();
+                    return new Token("...",TokenKind.Misc);
+                }
+
+                return new Token("..",TokenKind.Misc);
+            }
+            else
+            {
+                return new Token(".",TokenKind.Dot);
+            }       
+        }
+
+        public bool MatchesUpTo(IScanner<char> chars,int k) => (k>=0 && k<=2 && chars.LookAhead(k)=='.');
+        Token ITokenSource<Token>.CreateToken(IEnumerable<char> chars) => Lex(new Scanner<char>(chars));           
     }
 
     public bool IsAllowedInTokenCluster
