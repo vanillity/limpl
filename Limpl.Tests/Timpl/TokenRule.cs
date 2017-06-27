@@ -21,7 +21,7 @@ public class TokenRule : Limpl.TokenRule<Token>, Limpl.ITriviaRule<Token>
         (td,s)=>Lexer.token(TokenKind.Space,s,td,_=>_==' ' || _=='\t')
     );
 
-    private TokenRule(TokenKind kind, Func<Limpl.IScanner<char>,int,bool> matchesUpTo, Func<TokenRule,Limpl.Scanner<char>,Token> lex, bool allowedInOtherToken = false) 
+    public TokenRule(TokenKind kind, Func<Limpl.IScanner<char>,int,bool> matchesUpTo, Func<TokenRule,Limpl.Scanner<char>,Token> lex, bool allowedInOtherToken = false) 
                 : base(
                         kind,
                         matchesUpTo,

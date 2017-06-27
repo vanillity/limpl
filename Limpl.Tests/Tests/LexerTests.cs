@@ -50,6 +50,25 @@ public class LexerTests : LimplTest
         lexer = new Lexer(triviaRules: lexer.TriviaRules.Add(TokenRule.Space));
         lexerTest("a b",2,tokens=>Write(()=>tokens.Select(_=>new {_, _.LeadingTrivia, _.TrailingTrivia})));
 
+        //EndOfLine
+        lexer = new Lexer(lexer.TokenRules,lexer.TriviaRules.Add(new TokenRule(TokenKind.Misc,(s,i)=>(i>=0 && s.LookAhead(i)=='\r' || i>=0 && i<=1 && s.LookAhead(i)=='\n'),
+        (td,s)=>
+        {
+            var c = s.Consume();
+ 
+            if (c == '\r' && s.Current == '\n')
+            {
+                s.MoveNext();
+                return new Token("\r\n",TokenKind.Misc);
+            }
+            else
+            {
+                return new Token(c.ToString(),TokenKind.Misc);
+            }
+            
+        })));
+        lexerTest("a\r\n b",2);
+
     }
 
     [Fact] public void TriviaTest1()
