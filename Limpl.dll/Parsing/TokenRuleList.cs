@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Limpl.Parsing
+namespace Limpl
 {
 public class TokenRuleList<TRule, TToken>  : TokenSourceList<TRule, TToken> where TRule : Limpl.ITokenRule<TToken> where TToken : IToken
 {
@@ -15,6 +15,9 @@ public class TokenRuleList<TRule, TToken>  : TokenSourceList<TRule, TToken> wher
 
     internal TokenRuleList(IEnumerable<TRule> matches) : base(matches)
     {
+        if (matches==null)
+            return;
+
         foreach(var m in matches)
             InnerList.Add(m);
     }
@@ -29,12 +32,20 @@ public class TokenRuleList<TRule, TToken>  : TokenSourceList<TRule, TToken> wher
         return new TokenRuleList<TRule, TToken>(InnerList.Concat(rules));
     }
 
+    public TokenRuleList<TRule, TToken> Remove(params TRule[] rules)
+    {
+        return new TokenRuleList<TRule, TToken>(InnerList.Except(rules));
+    }
 }
 
 public abstract class TokenSourceList<TSource, TToken> : IReadOnlyList<TSource> where TSource : Limpl.ITokenSource<TToken> where TToken : IToken
 {
     protected ImmutableList<TSource> InnerList {get;} = ImmutableList<TSource>.Empty;
-    public TokenSourceList(IEnumerable<TSource> src) => InnerList = InnerList.AddRange(src);
+    public TokenSourceList(IEnumerable<TSource> src) 
+    {
+        if (src != null)
+            InnerList = InnerList.AddRange(src);    
+    }
 
     public TSource this[int index]
     {

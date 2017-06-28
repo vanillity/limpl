@@ -9,7 +9,7 @@ namespace Limpl
 
     public interface ITriviaRule<TTrivia> : ITriviaSource<TTrivia>  where TTrivia : ISyntaxTrivia
     {
-        bool MatchesUpTo(IScanner<char> chars, int k);
-        TTrivia Lex(Scanner<char> chars);
+        bool MatchesUpTo(IReadOnlyScanner<char> chars, int k);
+        TTrivia Lex(IScanner<char> chars);
     }
 }

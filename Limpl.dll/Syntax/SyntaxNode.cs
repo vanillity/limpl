@@ -8,7 +8,7 @@ namespace Limpl
     {
         bool IsToken {get;}
         bool IsTrivia {get;}
-        //ISyntaxSource Source {get;}   
+        int Position {get;} 
         ISyntaxNode Parent {get;}
         
         ISyntaxNode Clone();

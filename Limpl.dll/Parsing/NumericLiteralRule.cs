@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Limpl
 {
@@ -13,11 +11,9 @@ public abstract class NumericLiteralRule<TToken> : ITokenRule<TToken> where TTok
 
     public virtual bool IsAllowedInOtherToken => true;
 
-    bool ITokenRule<TToken>.IsAllowedInOtherToken => throw new NotImplementedException();
+    public abstract TToken CreateToken(string chars, double value, int position);
 
-    public abstract TToken CreateToken(IEnumerable<char> chars, double value);
-
-    public TToken Lex(Scanner<char> chars)
+    public TToken Lex(IScanner<char> chars)
     {
         Debug.Assert(char.IsDigit(chars.Current));
         alreadyHasDecimalPoint = false;
@@ -35,11 +31,11 @@ public abstract class NumericLiteralRule<TToken> : ITokenRule<TToken> where TTok
         var text  = sb.ToString();
         var value = alreadyHasDecimalPoint ? double.Parse(text) : int.Parse(text);
 
-        var t = CreateToken(sb.ToString(), value);
+        var t = CreateToken(sb.ToString(), value, position);
         return t;
     }
 
-    public bool MatchesUpTo(IScanner<char> chars,int k)
+    public bool MatchesUpTo(IReadOnlyScanner<char> chars,int k)
     {
         if (k==0)
             alreadyHasDecimalPoint = false; //reset

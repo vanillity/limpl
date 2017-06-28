@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
-using Limpl.Parsing;
-using Limpl.Syntax;
 
 namespace Limpl
 {
@@ -26,6 +24,7 @@ public abstract class Lexer<TToken,TTrivia> : ILexer<TToken,TTrivia> where TToke
          
     public TokenRuleList<ITokenRule<TToken>,TToken>   TokenRules {get;}
     public TriviaRuleList<ITriviaRule<TTrivia>, TTrivia> TriviaRules {get;}
+    protected IScanner<char> Scanner => chars;
 
     //StartOfFile event
     public static event EventHandler<LexerEventsArgs< Lexer<TToken,TTrivia> ,TToken,TTrivia>> StartOfFile;
@@ -43,20 +42,20 @@ public abstract class Lexer<TToken,TTrivia> : ILexer<TToken,TTrivia> where TToke
         //if (TokenRules.Contains(Limpl.TokenRule.StartOfFile))
             //yield return (sof = new AtSyntaxTrivia(TokenKind.StartOfFile,0));
         OnStartOfFile(out TToken sof);
-        if (!sof.Equals(default(TToken)))
+        if (sof != null && !sof.Equals(default(TToken)))
             yield return sof;
             
         TToken _token = default(TToken);
-        while (!chars.End || !_token.Equals(default(TToken)))
+        while (!chars.End || _token != null && !_token.Equals(default(TToken)))
         {        
             var c = chars.Current;
-            var trivia = (_token.Equals(default(TToken))) ? leadingTrivia : trailingTrivia;
+            var trivia = (_token == null || _token.Equals(default(TToken))) ? leadingTrivia : trailingTrivia;
 
             if (c == '\0') //NUL is before beginning and after end
             {
                if (chars.Position < 0)
                 {
-                    var sofRule = getRule(TriviaRules,chars,TriviaRules.Matches);
+                    var sofRule = GetTriviaRule(chars);
                     if (sofRule != null)
                     {
                         var _triv = (TTrivia) sofRule.Lex(chars);
@@ -72,7 +71,7 @@ public abstract class Lexer<TToken,TTrivia> : ILexer<TToken,TTrivia> where TToke
             }
 
             //trivia (non-tokens)
-            var triviaRule = getRule(TriviaRules,chars,TriviaRules.Matches);
+            var triviaRule = GetTriviaRule(chars);
             if (triviaRule!=null)
             {
                 var p = chars.Position;
@@ -84,9 +83,9 @@ public abstract class Lexer<TToken,TTrivia> : ILexer<TToken,TTrivia> where TToke
             }
             
             //tokens
-            if (_token.Equals(default(TToken)))
+            if (_token == null || _token.Equals(default(TToken)))
             {
-                var tokenRule = getRule(TokenRules,chars,TokenRules.Matches);    
+                var tokenRule = GetTokenRule(chars);    
                 if (tokenRule!=null)
                 {
                     var p = chars.Position;
@@ -98,7 +97,7 @@ public abstract class Lexer<TToken,TTrivia> : ILexer<TToken,TTrivia> where TToke
             }
 
             //fall-back token (cluster)
-            if (_token.Equals(default(TToken)))
+            if (_token == null || _token.Equals(default(TToken)))
             {
                 _token = LexFallbackToken(chars); //tokenCluster()
                 continue;    
@@ -111,7 +110,7 @@ public abstract class Lexer<TToken,TTrivia> : ILexer<TToken,TTrivia> where TToke
                 if (chars.End)
                 {
                     OnEndOfFileTrivia(out eof_trivia);
-                    if (!eof_trivia.Equals(default(TTrivia)))
+                    if (eof_trivia != null && !eof_trivia.Equals(default(TTrivia)))
                        trailingTrivia.Add(eof_trivia);
                 }
             
@@ -133,12 +132,12 @@ public abstract class Lexer<TToken,TTrivia> : ILexer<TToken,TTrivia> where TToke
 
 
             OnEndOfFileToken(out TToken eof);
-            if (!eof.Equals(default(TToken)))
+            if (eof != null && !eof.Equals(default(TToken)))
                 yield return eof;
          }
     }
 
-    protected abstract TToken LexFallbackToken(Scanner<char> chars);
+    protected abstract TToken LexFallbackToken(IScanner<char> chars);
     protected abstract void SetParent(ref TTrivia trivia, ISyntaxNode parent);
     protected abstract void SetLeadingTrivia(ref  TToken token, SyntaxList<TTrivia> leadingTrivia);
     protected abstract void SetTrailingTrivia(ref  TToken token, SyntaxList<TTrivia> leadingTrivia);
@@ -162,21 +161,15 @@ public abstract class Lexer<TToken,TTrivia> : ILexer<TToken,TTrivia> where TToke
     }
 
     protected ITokenRule<TToken> GetTokenRule(IScanner<char> chars)
-      => getRule(TokenRules,chars,TokenRules.Matches);
-
-    protected ITriviaRule<TTrivia> GetTriviaRule(IScanner<char> chars)
-      => getRule(TriviaRules,chars,TriviaRules.Matches);
-
-    T getRule<T>(IReadOnlyList<T> rules, IScanner<char> chars, Func<IScanner<char>,int,IReadOnlyList<T>> getMatches)
     {
         int k = -1;
         var anyMatch = false;
-        IReadOnlyList<T> lastMatches = rules, matches;
+        TokenRuleList<ITokenRule<TToken>,TToken> lastMatches = TokenRules, matches;
 
-        if (rules.Count > 0)
+        if (TokenRules.Count > 0)
         {
             k = -1;
-            while((matches = getMatches(chars,++k)).Count > 0)  //lastMatches.Matches(chars,++k)).Count>0)
+            while((matches = lastMatches.Matches(chars,++k)).Count > 0)  
             {
                 lastMatches = matches;
                 anyMatch = true;
@@ -189,7 +182,32 @@ public abstract class Lexer<TToken,TTrivia> : ILexer<TToken,TTrivia> where TToke
                 return lastMatches[0];
         }    
 
-        return default(T);
+        return null;
+    }
+
+    protected ITriviaRule<TTrivia> GetTriviaRule(IScanner<char> chars)
+    {
+        int k = -1;
+        var anyMatch = false;
+        TriviaRuleList<ITriviaRule<TTrivia>,TTrivia> lastMatches = TriviaRules, matches;
+
+        if (TriviaRules.Count > 0)
+        {
+            k = -1;
+            while((matches = lastMatches.Matches(chars,++k)).Count > 0)  
+            {
+                lastMatches = matches;
+                anyMatch = true;
+
+                if (chars.End)
+                    break;
+            }
+
+            if (anyMatch && lastMatches?.Count > 0)
+                return lastMatches[0];
+        }    
+
+        return null;
     }
 }
 }

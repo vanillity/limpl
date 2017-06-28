@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Limpl.Parsing
+namespace Limpl
 {
 public class TriviaRuleList<TRule, TTrivia>  : TriviaSourceList<TRule, TTrivia> 
                                                         where TRule : Limpl.ITriviaSource<TTrivia>, Limpl.ITriviaRule<TTrivia>
@@ -17,8 +17,9 @@ public class TriviaRuleList<TRule, TTrivia>  : TriviaSourceList<TRule, TTrivia>
 
     internal TriviaRuleList(IEnumerable<TRule> matches) : base(matches)
     {
-        foreach(var m in matches)
-            InnerList.Add(m);
+        if (matches != null)    
+            foreach(var m in matches)
+                InnerList.Add(m);
     }
 
     public TriviaRuleList<TRule, TTrivia> Matches(IScanner<char> chars, int k)
@@ -36,7 +37,11 @@ public class TriviaRuleList<TRule, TTrivia>  : TriviaSourceList<TRule, TTrivia>
 public abstract class TriviaSourceList<TSource, TTrivia> : IReadOnlyList<TSource> where TSource : Limpl.ITriviaSource<TTrivia> where TTrivia : ISyntaxTrivia
 {
     protected ImmutableList<TSource> InnerList {get;} = ImmutableList<TSource>.Empty;
-    public TriviaSourceList(IEnumerable<TSource> src) => InnerList = InnerList.AddRange(src);
+    public TriviaSourceList(IEnumerable<TSource> src)
+    {
+        if (src !=null) 
+            InnerList = InnerList.AddRange(src);
+    }
 
     public TSource this[int index]
     {

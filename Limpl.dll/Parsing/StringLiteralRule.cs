@@ -22,16 +22,16 @@ public abstract class StringLiteralRule<TToken> : ITokenRule<TToken> where TToke
 
     public virtual bool IsAllowedInOtherToken => false;
 
-    public abstract TToken CreateToken(IEnumerable<char> chars);
+    public abstract TToken CreateToken(string text, int position);
 
-    public TToken Lex(Scanner<char> chars)
+    public TToken Lex(IScanner<char> chars)
     {
         Debug.Assert(chars.Current==delimiter);
-        chars.Consume();
+        var sb = new StringBuilder();
+        sb.Append(chars.Consume());
 
         var p  = chars.Position+1;
-        var sb = new StringBuilder();
-
+        
         while (!chars.End && chars.Current != delimiter)
         {
             if (chars.Current=='\\' && (chars.LookAhead(1)==delimiter||chars.LookAhead(1)=='\\'))
@@ -41,14 +41,14 @@ public abstract class StringLiteralRule<TToken> : ITokenRule<TToken> where TToke
         }
 
         Debug.Assert(chars.Current==delimiter);
-        chars.Consume();
+        sb.Append(chars.Consume());
 
         var text = sb.ToString();
-        var t = CreateToken(text);
+        var t = CreateToken(text, p);
         return t;
     }
 
-    public bool MatchesUpTo(IScanner<char> chars,int k)
+    public bool MatchesUpTo(IReadOnlyScanner<char> chars,int k)
     {
         if (k==0)
         {
@@ -83,5 +83,11 @@ public abstract class StringLiteralRule<TToken> : ITokenRule<TToken> where TToke
 
         return false;    
     }
+
+    TToken ITokenSource<TToken>.CreateToken(IEnumerable<char> chars)
+    {
+        return Lex(new Scanner<char>(chars));
+    }
+
 }
 }

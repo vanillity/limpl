@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Limpl.Syntax
+namespace Limpl
 {
 public delegate void RefAction<T,U>(ref T arg0, U arg1);
 
@@ -78,7 +78,7 @@ public class SyntaxList<TNode> :  IReadOnlyList<TNode> where TNode : ISyntaxNode
         return nodes.GetEnumerator();
     }
 
-    internal void append(IToken endToken)
+    internal protected void Append(IToken endToken)
     {
         nodes = nodes.Add((TNode)(object)endToken);
     }
