@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 using Limpl;
-using Limpl.Syntax;
 
 namespace Timpl
 {
 public struct Token : Limpl.IToken, Limpl.ISyntaxTrivia
 {
-    public Token(string text, TokenKind kind, ISyntaxNode parent = null, bool isTrivia = false)
+    public Token(string text, TokenKind kind, int position = -1, ISyntaxNode parent = null, object value = null, bool isTrivia = false)
     {
         Text = text;
         Kind = kind;
@@ -16,6 +15,8 @@ public struct Token : Limpl.IToken, Limpl.ISyntaxTrivia
         TrailingTrivia = null;
         IsTrivia = isTrivia;
         Parent = parent;
+        Position = position;
+        Value = value;
     }
 
     public TokenKind Kind {get;}
@@ -36,6 +37,13 @@ public struct Token : Limpl.IToken, Limpl.ISyntaxTrivia
 
     IReadOnlyList<ISyntaxTrivia> IToken.LeadingTrivia => (IReadOnlyList<ISyntaxTrivia>) LeadingTrivia;
     IReadOnlyList<ISyntaxTrivia> IToken.TrailingTrivia => (IReadOnlyList<ISyntaxTrivia>) TrailingTrivia;
+
+    public int Position {get;}
+
+    public object Value
+    {
+        get;
+    }
 
     public ISyntaxNode Clone()
     {

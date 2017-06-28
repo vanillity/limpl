@@ -98,6 +98,30 @@ public class LexerTests : LimplTest
         lexerTest("a 9.0.b c",5); // a, 9.0, ., b, c
     }
 
+
+    //# Default Lexer Test
+    [Fact] public void LexerTest2()
+    {
+        lexer = new Timpl.Lexer(
+                        tokenRules: new Limpl.ITokenRule<Token>[]
+                        {
+                            TokenRule.StringLiteral,
+                            TokenRule.SimpleTokenRule(TokenKind.Misc, "("),
+                            TokenRule.SimpleTokenRule(TokenKind.Misc, ")"),
+                            TokenRule.SimpleTokenRule(TokenKind.Misc, "@"),
+                            TokenRule.SimpleTokenRule(TokenKind.Misc, "<"),
+                            TokenRule.SimpleTokenRule(TokenKind.Misc, ">"),
+                        },
+                        triviaRules: new Limpl.ITriviaRule<Token>[]
+                        {
+                            
+                        });
+
+        lexerTest("(5)",3);
+        lexerTest("@X<>",4);
+        lexerTest("'Hello world!'",1);        
+    }
+
     [Fact] public void TriviaTest1()
     {
         lexer = new Lexer(lexer.TokenRules,new[]{TokenRule.SOF});

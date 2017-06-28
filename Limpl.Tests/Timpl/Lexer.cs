@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Limpl;
-using Limpl.Syntax;
 
 namespace Timpl
 {
@@ -23,7 +22,7 @@ class Lexer : Limpl.Lexer<Token,Token>
         yield return TokenRule.Dot;
     }
 
-    protected override Token LexFallbackToken(Scanner<char> chars)
+    protected override Token LexFallbackToken(IScanner<char> chars)
     {
         return token(TokenKind.Misc,chars,null,c=>GetTriviaRule(chars)==null && (GetTokenRule(chars)?.IsAllowedInOtherToken ?? true));
     }
@@ -69,7 +68,7 @@ class Lexer : Limpl.Lexer<Token,Token>
 
     internal static  Token token(
                             TokenKind kind, 
-                            Scanner<char> buffer, 
+                            IScanner<char> buffer, 
                             ITokenRule<Token> tokendef,
                             Func<char,bool> predicate=null) 
     {
